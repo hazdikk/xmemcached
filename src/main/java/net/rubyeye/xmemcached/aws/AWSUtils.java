@@ -1,16 +1,16 @@
-package net.rubyeye.xmemcached.autodiscovery;
+package net.rubyeye.xmemcached.aws;
 
 import java.util.ArrayList;
 import java.util.List;
 import net.rubyeye.xmemcached.utils.ByteUtils;
 
 /**
- * Auto discovery get config command
+ * AWS get config command
  * 
  * @author dennis
  * 
  */
-public class AutoDiscoveryUtils {
+public class AWSUtils {
 
   private static final String DELIMITER = "|";
 

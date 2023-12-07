@@ -1,4 +1,4 @@
-package net.rubyeye.xmemcached.autodiscovery;
+package net.rubyeye.xmemcached.aws;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -32,15 +32,15 @@ import net.rubyeye.xmemcached.transcoders.Transcoder;
 import net.rubyeye.xmemcached.utils.InetSocketAddressWrapper;
 
 /**
- * Auto Discovery Client.
+ * AWS ElasticCache Client.
  *
  * @since 2.3.0
  * @author dennis
  *
  */
-public class AutoDiscoveryCacheClient extends XMemcachedClient implements ConfigUpdateListener {
+public class AWSElasticCacheClient extends XMemcachedClient implements ConfigUpdateListener {
 
-  private static final Logger log = LoggerFactory.getLogger(AutoDiscoveryCacheClient.class);
+  private static final Logger log = LoggerFactory.getLogger(AWSElasticCacheClient.class);
 
   private boolean firstTimeUpdate = true;
 
@@ -115,30 +115,30 @@ public class AutoDiscoveryCacheClient extends XMemcachedClient implements Config
   public static final long DEFAULT_POLL_CONFIG_INTERVAL_MS = 60000;
 
   /**
-   * Construct an AutoDiscoveryCacheClient instance with one config address and default poll interval.
+   * Construct an AWSElasticCacheClient instance with one config address and default poll interval.
    *
    * @since 2.3.0
    * @param addr config server address.
    * @throws IOException
    */
-  public AutoDiscoveryCacheClient(final InetSocketAddress addr) throws IOException {
+  public AWSElasticCacheClient(final InetSocketAddress addr) throws IOException {
     this(addr, DEFAULT_POLL_CONFIG_INTERVAL_MS);
   }
 
   /**
-   * Construct an AutoDiscoveryCacheClient instance with one config address and poll interval.
+   * Construct an AWSElasticCacheClient instance with one config address and poll interval.
    *
    * @since 2.3.0
    * @param addr config server address.
    * @param pollConfigIntervalMills config poll interval in milliseconds.
    * @throws IOException
    */
-  public AutoDiscoveryCacheClient(final InetSocketAddress addr, final long pollConfigIntervalMills)
+  public AWSElasticCacheClient(final InetSocketAddress addr, final long pollConfigIntervalMills)
       throws IOException {
     this(addr, pollConfigIntervalMills, new TextCommandFactory());
   }
 
-  public AutoDiscoveryCacheClient(final InetSocketAddress addr, final long pollConfigIntervalMills,
+  public AWSElasticCacheClient(final InetSocketAddress addr, final long pollConfigIntervalMills,
       final CommandFactory cmdFactory) throws IOException {
     this(asList(addr), pollConfigIntervalMills, cmdFactory);
   }
@@ -150,32 +150,32 @@ public class AutoDiscoveryCacheClient extends XMemcachedClient implements Config
   }
 
   /**
-   * Construct an AutoDiscoveryCacheClient instance with config server addresses and default config
+   * Construct an AWSElasticCacheClient instance with config server addresses and default config
    * poll interval.
    *
    * @since 2.3.0
    * @param addrs config server list.
    * @throws IOException
    */
-  public AutoDiscoveryCacheClient(final List<InetSocketAddress> addrs) throws IOException {
+  public AWSElasticCacheClient(final List<InetSocketAddress> addrs) throws IOException {
     this(addrs, DEFAULT_POLL_CONFIG_INTERVAL_MS);
   }
 
   /**
-   * Construct an AutoDiscoveryCacheClient instance with config server addresses.
+   * Construct an AWSElasticCacheClient instance with config server addresses.
    *
    * @since 2.3.0
    * @param addrs
    * @param pollConfigIntervalMills
    * @throws IOException
    */
-  public AutoDiscoveryCacheClient(final List<InetSocketAddress> addrs,
+  public AWSElasticCacheClient(final List<InetSocketAddress> addrs,
       final long pollConfigIntervalMills) throws IOException {
     this(addrs, pollConfigIntervalMills, new TextCommandFactory());
   }
 
   /**
-   * Construct an AutoDiscoveryCacheClient instance with config server addresses.
+   * Construct an AWSElasticCacheClient instance with config server addresses.
    *
    * @since 2.3.0
    * @param addrs config server list.
@@ -184,7 +184,7 @@ public class AutoDiscoveryCacheClient extends XMemcachedClient implements Config
    * @throws IOException
    */
   @SuppressWarnings("unchecked")
-  public AutoDiscoveryCacheClient(final List<InetSocketAddress> addrs,
+  public AWSElasticCacheClient(final List<InetSocketAddress> addrs,
       final long pollConfigIntervalMills, final CommandFactory commandFactory) throws IOException {
     this(new ArrayMemcachedSessionLocator(), new IndexMemcachedSessionComparator(),
         new SimpleBufferAllocator(), XMemcachedClientBuilder.getDefaultConfiguration(),
@@ -204,7 +204,7 @@ public class AutoDiscoveryCacheClient extends XMemcachedClient implements Config
     return m;
   }
 
-  AutoDiscoveryCacheClient(final MemcachedSessionLocator locator,
+  AWSElasticCacheClient(final MemcachedSessionLocator locator,
       final MemcachedSessionComparator comparator, final BufferAllocator allocator,
       final Configuration conf, final Map<SocketOption, Object> socketOptions,
       final CommandFactory commandFactory, final Transcoder transcoder,
@@ -254,7 +254,7 @@ public class AutoDiscoveryCacheClient extends XMemcachedClient implements Config
    */
   public ClusterConfiguration getConfig(final String key)
       throws MemcachedException, InterruptedException, TimeoutException {
-    Command cmd = this.commandFactory.createAutoDiscoveryCacheConfigCommand("get", key);
+    Command cmd = this.commandFactory.createAWSElasticCacheConfigCommand("get", key);
     final Session session = sendCommand(cmd);
     latchWait(cmd, this.opTimeout, session);
     cmd.getIoBuffer().free();
@@ -263,7 +263,7 @@ public class AutoDiscoveryCacheClient extends XMemcachedClient implements Config
     if (result == null) {
       throw new MemcachedException("Operation fail,may be caused by networking or timeout");
     }
-    return AutoDiscoveryUtils.parseConfiguration(result);
+    return AWSUtils.parseConfiguration(result);
   }
 
   @Override
